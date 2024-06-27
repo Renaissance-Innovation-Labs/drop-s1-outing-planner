@@ -43,7 +43,7 @@ export default function WordRotate({
             ${
               index === words.length - 1
                 ? 'text-red-600 '
-                : 'line-through text-gray-500'
+                : 'line-through text-gray-300'
             }
           `}
           {...framerProps}
