@@ -3,10 +3,17 @@ import React, { useState } from 'react';
 import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
 
-import { plans } from '@/utils/outing';
+import AZ from '@/components/A-Z';
+import Random from '@/components/Random';
+import AIExpert from '@/components/AIExpert';
+
+type ModalProps = {
+  name: string;
+  status: boolean;
+};
 
 const Explore = () => {
-  const [openModal, setOpenModal] = useState({
+  const [openModal, setOpenModal] = useState<ModalProps>({
     name: '',
     status: false,
   });
@@ -15,7 +22,7 @@ const Explore = () => {
     <main
       className={`bg-[#f5f5f5] relative flex min-h-screen flex-col justify-center items-center p-4 lg:p-24 ${inter.className}`}
     >
-      <section className="flex flex-col lg:flex-row gap-8">
+      <section className="flex flex-col md:flex-row md:flex-wrap gap-8">
         <article className="cursor-pointer p-4 hover:shadow-lg hover:shadow-red-100 overflow-hidden relative  h-80 w-80 rounded-lg bg-red-900 text-white">
           <div className="border-4 border-white h-full p-4 rounded-md">
             <h2 className="text-3xl font-bold text-white"> A-Z Date Ideas</h2>
@@ -79,70 +86,13 @@ const Explore = () => {
 
       {openModal.status && (
         <div className="bg-black/40 fixed top-0 left-0 bottom-0 right-0 px-4 py-6 flex justify-center items-center ">
-          {openModal?.name === 'serial' && (
-            <div className="overflow-y-auto relative bg-white text-black h-full w-11/12 lg:w-[33%] ml-auto rounded-lg">
-              <button
-                onClick={() =>
-                  setOpenModal({
-                    name: '',
-                    status: false,
-                  })
-                }
-                className="absolute top-0 right-0 h-12 w-12 rounded-md shadow-md"
-              >
-                X
-              </button>
-
-              <div className="py-10 px-6 ">
-                <h3>A-Z Date Ideas</h3>
-
-                <p className="mb-4">
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Ducimus, laborum.
-                </p>
-
-                <div className="overflow-y-scroll">
-                  {' '}
-                  {plans?.map((item) => (
-                    <div className="mb-6" key={item.header}>
-                      <span className="font-bold text-xl">{item.header}</span>
-
-                      <ul className="mt-3">
-                        {item.ideas?.map((_item) => (
-                          <li className="pl-4 mb-2" key={_item.id}>
-                            {_item.idea}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+          {openModal?.name === 'serial' && <AZ setOpenModal={setOpenModal} />}
 
           {openModal?.name === 'random' && (
-            <div className="relative bg-white text-black h-1/2 w-1/2 mx-auto rounded-lg">
-              <button
-                onClick={() =>
-                  setOpenModal({
-                    name: '',
-                    status: false,
-                  })
-                }
-                className="absolute top-0 right-0 h-12 w-12 rounded-md shadow-md"
-              >
-                X
-              </button>
-              {openModal?.name}
-            </div>
+            <Random setOpenModal={setOpenModal} />
           )}
 
-          {openModal?.name === 'ai' && (
-            <div className="bg-white text-black h-1/2 w-1/2 mx-auto rounded-lg">
-              {openModal?.name}
-            </div>
-          )}
+          {openModal?.name === 'ai' && <AIExpert />}
         </div>
       )}
     </main>
