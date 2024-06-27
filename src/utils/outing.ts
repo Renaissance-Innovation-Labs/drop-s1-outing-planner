@@ -6,6 +6,7 @@ export const plans = [
       { id: 2, idea: 'aquarium visit' },
       { id: 3, idea: 'arcade games' },
       { id: 4, idea: 'art gallery' },
+      { id: 5, idea: 'AYCEB (all you can eat buffet)' },
     ],
   },
   {
@@ -120,7 +121,8 @@ export const plans = [
     ideas: [
       { id: 1, idea: 'nature walk' },
       { id: 2, idea: 'netflix and chill' },
-      { id: 3, idea: 'night vigil' },
+      { id: 3, idea: 'night clubbing' },
+      { id: 4, idea: 'night vigil' },
     ],
   },
   {
@@ -191,8 +193,9 @@ export const plans = [
   {
     header: 'W',
     ideas: [
-      { id: 1, idea: 'window shopping' },
-      { id: 2, idea: 'wine tasting' },
+      { id: 1, idea: 'wedding (plus 1)' },
+      { id: 2, idea: 'window shopping' },
+      { id: 3, idea: 'wine tasting' },
     ],
   },
   {

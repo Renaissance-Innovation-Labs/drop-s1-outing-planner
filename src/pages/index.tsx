@@ -13,12 +13,12 @@ export default function Home() {
       <span className="text-2xl font-bold text-black block absolute top-8 left-8">
         {' '}
         <span className="text-red-500 shadow-sm shadow-white/70">
-          Outing{' '}
+          Outyn{' '}
         </span>{' '}
         Planner
       </span>
 
-      <div className="relative bg-white shadow-lg shadow-purple-200 h-72 md:h-96 rounded-lg w-full px-4 py-8 lg:p-20">
+      <div className="relative bg-white shadow-lg shadow-purple-200 w-full lg:w-2/3 h-72 md:h-96 rounded-lg  px-4 py-8 lg:p-20">
         <h1 className="font-medium text-2xl lg:text-5xl text-center text-black mb-8">
           We have the <span className="text-red-500 text-semibold">answer</span>{' '}
           to
@@ -27,7 +27,7 @@ export default function Home() {
 
         <div className=" text-center">
           <WordRotate
-            className="text-3xl lg:text-6xl font-bold"
+            className="text-3xl lg:text-5xl font-bold"
             words={[
               '🙃 Have you eaten?',
               '🫦 What are you wearing? ',
