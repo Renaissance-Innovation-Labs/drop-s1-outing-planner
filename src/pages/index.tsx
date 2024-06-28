@@ -1,48 +1,68 @@
-import Link from 'next/link';
+import Image from 'next/image';
+import Head from 'next/head';
 
-import { Inter } from 'next/font/google';
-const inter = Inter({ subsets: ['latin'] });
+import { useRouter } from 'next/router';
 
-import WordRotate from '@/components/WordRotate';
+import { Lily_Script_One } from 'next/font/google';
+const lily = Lily_Script_One({
+  weight: '400',
+  style: 'normal',
+  display: 'swap',
+  subsets: ['latin', 'latin-ext'],
+});
 
-export default function Home() {
+import { useEffect } from 'react';
+
+import { outynGlass, outynLogoLarge } from '../../public/icons';
+
+export default function SplashScreen() {
+  const router = useRouter();
+
+  // useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     router.push('/home');
+  //   }, 4000);
+
+  //   return () => clearTimeout(timeoutId);
+  // }, [router]);
+
   return (
-    <main
-      className={`bg-[#f5f5f5] relative flex min-h-screen flex-col justify-center items-center p-4 lg:p-24 ${inter.className}`}
-    >
-      <span className="text-2xl font-bold text-black block absolute top-8 left-8">
-        {' '}
-        <span className="text-red-500 shadow-sm shadow-white/70">
-          Outyn{' '}
-        </span>{' '}
-        Planner
-      </span>
+    <div>
+      <Head>
+        <meta charSet="utf-8" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#000000" />
 
-      <div className="relative bg-white shadow-lg shadow-purple-200 w-full lg:w-2/3 h-72 md:h-96 rounded-lg  px-4 py-8 lg:p-20">
-        <h1 className="font-medium text-2xl lg:text-5xl text-center text-black mb-8">
-          We have the <span className="text-red-500 text-semibold">answer</span>{' '}
-          to
-          <br /> the biggest dating question.
-        </h1>
+        <meta property="og:title" content="Outyn Ideas - Explore" />
+        <title>Outyn Ideas </title>
 
-        <div className=" text-center">
-          <WordRotate
-            className="text-3xl lg:text-5xl font-bold"
-            words={[
-              '🙃 Have you eaten?',
-              '🫦 What are you wearing? ',
-              '❤️‍🔥 Do you love me?',
-              'Got a date idea?💡',
-            ]}
-          />
+        <meta
+          name="description"
+          content="Stuck on what to do for a date? We have got you covered, browse through our list of outing ideas or talk to our Ai expert to curate ten fascinating date ideas fit to your partner's personality"
+        />
+        <meta
+          property="og:description"
+          content="Stuck on what to do for a date? We have got you covered, browse through our list of outing ideas or talk to our Ai expert to curate ten fascinating date ideas fit to your partner's personality"
+        />
+
+        {/* <meta property="og:image" content={rilTag} /> */}
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      {/* splash screen */}
+      <div className="h-screen flex items-center justify-center bg-[#9B001A]">
+        <div>
+          <Image src={outynGlass} alt="outyn logo" />
+
+          <h1 className={`${lily.className} text-white font-bold text-7xl`}>
+            Outyn
+          </h1>
+
+          <p className="text-sm  text-[#F6F6F6] font-normal ml-auto mt-4 border border-white w-fit py-2 px-4 rounded-full">
+            Date Ideas Suite
+          </p>
         </div>
-
-        <Link href="/explore">
-          <button className="shadow-lg shadow-red-500 text-white absolute  -bottom-2 -right-4 bg-red-400 text-base font-semibold px-8 py-4 rounded-full">
-            Explore Ideas
-          </button>
-        </Link>
       </div>
-    </main>
+    </div>
   );
 }
