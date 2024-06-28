@@ -12,14 +12,12 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
     setPersonality(e.target.value);
   };
 
-  const key = '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';
-
   const getSuggestionFromAI = async (personality: string): Promise<string> => {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${key}`,
+        Authorization: `Bearer token`,
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
