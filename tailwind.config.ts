@@ -15,6 +15,19 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       keyframes: {
+        typewriter: {
+          to: {
+            left: '100%',
+          },
+        },
+        slightFadeIn: {
+          '0%': {
+            opacity: '0.5',
+          },
+          '100%': {
+            opacity: '1',
+          },
+        },
         fadeIn: {
           '0%': {
             opacity: '0',
@@ -47,7 +60,9 @@ const config: Config = {
         },
       },
       animation: {
+        typewriter: 'typewriter 4s steps(28) forwards infinite',
         fadeIn: 'fadeIn 3s',
+        slightFadeIn: 'slightFadeIn 1s ease-in',
         fadeOut: 'fadeOut 3s',
         expand: 'expand 0.5s ease-out forwards',
         collapse: 'collapse 0.3s ease-out forwards',

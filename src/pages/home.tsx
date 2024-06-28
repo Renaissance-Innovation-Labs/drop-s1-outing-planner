@@ -35,7 +35,7 @@ export default function Home() {
       </Head>
 
       <main
-        className={`bg-[#f5f5f5] bg-glass-bg bg-blend-overlay bg-bottom  lg:bg-right  bg-contain relative  flex min-h-screen flex-col justify-center items-center p-4 lg:p-24 ${inter.className}`}
+        className={`bg-[#f5f5f5] animate-slightFadeIn bg-glass-bg bg-blend-overlay bg-bottom  lg:bg-right  bg-contain relative  flex min-h-screen flex-col justify-center items-center p-4 lg:p-24 ${inter.className}`}
       >
         <div className="text-2xl font-bold text-black block absolute top-8 left-8 md:left-16">
           <Image src={outynLogo} alt="outyn planner logo" />
