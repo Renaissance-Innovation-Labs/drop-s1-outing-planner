@@ -1,22 +1,9 @@
 import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { plans } from '@/utils/outing';
 
-interface Searched {
-  id?: number;
-  header?: string;
-  ideas?: Idea[];
-}
+import { OpenModalProps, Searched } from '@/utils/context';
 
-interface Idea {
-  id: number;
-  idea: string;
-}
-
-interface RandomProps {
-  setOpenModal: (modalState: { name: string; status: boolean }) => void;
-}
-
-const Random: React.FC<RandomProps> = ({ setOpenModal }) => {
+const Random: React.FC<OpenModalProps> = ({ setOpenModal }) => {
   const [keyW, setKeyW] = useState<string>('');
   const [results, setResults] = useState<Searched>({});
   const [startIndex, setStartIndex] = useState<number>(0);
@@ -91,7 +78,7 @@ const Random: React.FC<RandomProps> = ({ setOpenModal }) => {
                     className={
                       startIndex > 0
                         ? 'stroke-black animate-fadeIn'
-                        : 'stroke-gray-100'
+                        : 'stroke-gray-100 animate-fadeOut'
                     }
                     width="8"
                     height="14"
@@ -119,7 +106,7 @@ const Random: React.FC<RandomProps> = ({ setOpenModal }) => {
                     className={
                       startIndex + itemsPerPage < (results.ideas?.length ?? 0)
                         ? 'stroke-black animate-fadeIn'
-                        : 'stroke-gray-100'
+                        : 'stroke-gray-100 animate-fadeOut'
                     }
                     width="8"
                     height="14"
