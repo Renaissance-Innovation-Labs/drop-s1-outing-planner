@@ -1,4 +1,4 @@
-const key = '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';
+const key = '';
 
 export const getSuggestionFromAI = async (
   personality: string,
