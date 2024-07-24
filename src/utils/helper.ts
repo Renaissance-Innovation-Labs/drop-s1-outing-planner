@@ -1,20 +1,33 @@
-export const getSuggestionFromAI = async (
-  messages: Array<{ role: string; content: string }>,
-  key: string | undefined,
-): Promise<string> => {
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${key}`,
-    },
-    body: JSON.stringify({
-      model: 'gpt-3.5-turbo',
-      messages: messages,
-      max_tokens: 200,
-    }),
-  });
+import axios from 'axios';
+import { MessageProps, AIResponse } from './context';
 
-  const data = await response.json();
-  return data?.choices[0]?.message?.content?.trim();
+export const getSuggestionFromAI = async (
+  messages: MessageProps[],
+  key: string | undefined,
+): Promise<AIResponse> => {
+  try {
+    const res = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-3.5-turbo',
+        messages,
+        max_tokens: 220,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${key}`,
+        },
+      },
+    );
+    const data = res.data;
+    const response = data?.choices[0]?.message?.content?.trim();
+    return { response };
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.error?.message || error?.message || String(error);
+    return {
+      error: `(Error StatusCode: ${error?.response?.status}) ${errorMessage}`,
+    };
+  }
 };
