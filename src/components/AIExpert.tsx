@@ -9,7 +9,7 @@ import { iRobotLarge, iRobotSmall, person } from '../../public/images';
 import { halfCircle } from '../../public/icons';
 
 const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
-  const key = process.env.OPEN_API_KEY + 'hey';
+  const key = process.env.OPEN_API_KEY;
 
   const [messages, setMessages] = useState<MessageProps[]>([
     {
