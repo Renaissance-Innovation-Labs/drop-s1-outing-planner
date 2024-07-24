@@ -108,7 +108,7 @@ const Explore = () => {
             <div className="border-2 border-white h-full p-4 rounded-md">
               <h2 className="text-2xl font-bold text-white">
                 {' '}
-                Talk to Uncle Sam
+                Talk to Ifunay-AI
               </h2>
               <p className="text-gray-100 text-lg mt-4">
                 We can offer dates ideas based on the information provided to
@@ -116,9 +116,17 @@ const Explore = () => {
               </p>
             </div>
 
-            <div className="absolute -bottom-4 -right-6 h-32 w-32 rounded-full flex items-center justify-center bg-white ">
-              <button className="font-semibold text-lg text-black mr-4">
-                Coming <br /> Soon
+            <div
+              onClick={() =>
+                setOpenModal({
+                  name: 'ai',
+                  status: true,
+                })
+              }
+              className="absolute -bottom-4 -right-6 h-32 w-32 rounded-full flex items-center justify-center bg-white "
+            >
+              <button className="font-semibold text-lg text-gray-600">
+                GO
               </button>
             </div>
           </article>
