@@ -17,3 +17,13 @@ export interface Searched {
   header?: string;
   ideas?: Idea[];
 }
+
+export interface MessageProps {
+  role: string;
+  content?: string;
+}
+
+export interface AIResponse {
+  response?: string;
+  error?: string;
+}
