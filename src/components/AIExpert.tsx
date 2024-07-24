@@ -1,79 +1,146 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 
 import { OpenModalProps } from '@/utils/context';
 
-// import { getSuggestionFromAI } from '@/utils/helper';
+import { getSuggestionFromAI } from '@/utils/helper';
+
+import { iRobotLarge, iRobotSmall, person } from '../../public/images';
+import { halfCircle } from '../../public/icons';
 
 const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
-  const [personality, setPersonality] = useState<string>('');
-  const [suggestion, setSuggestion] = useState<string>('');
+  const key = process.env.OPEN_API_KEY;
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPersonality(e.target.value);
-  };
+  const [messages, setMessages] = useState<
+    Array<{ role: string; content: string }>
+  >([
+    {
+      role: 'system',
+      content: 'You are a helpful assistant. Your name is Ifunay-ai',
+    },
+  ]);
 
-  const getSuggestionFromAI = async (personality: string): Promise<string> => {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer token`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: 'You are a helpful assistant.' },
-          {
-            role: 'user',
-            content: `Suggest a date idea for someone with the following personality traits: ${personality}`,
-          },
-        ],
-        max_tokens: 150,
-      }),
-    });
+  const [input, setInput] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const chatRef = useRef(null);
 
-    const data = await response.json();
-    return data.choices[0].message.content.trim();
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const dateSuggestion = await getSuggestionFromAI(personality);
-    setSuggestion(dateSuggestion);
+    const newMessage = { role: 'user', content: input };
+
+    const updatedMessages = [...messages, newMessage];
+
+    setMessages(updatedMessages);
+
+    setInput('');
+
+    setLoading(true);
+
+    const response = await getSuggestionFromAI(updatedMessages, key);
+
+    const aiReply = { role: 'assistant', content: response };
+    setMessages([...updatedMessages, aiReply]);
+    setLoading(false);
   };
 
-  console.log({ suggestion, personality });
+  useEffect(() => {
+    if (chatRef.current) {
+      (chatRef.current as HTMLElement).scrollIntoView();
+    }
+  }, [messages]);
 
   return (
-    <div className="relative bg-white text-black w-full h-fit lg:h-fit lg:w-1/3 mx-auto rounded-lg p-8">
-      <button
-        onClick={() => setOpenModal({ name: '', status: false })}
-        className="absolute top-0 right-0 h-12 w-12 rounded-md shadow-md"
-      >
-        X
-      </button>
+    <div className="relative bg-white text-black w-full h-[600px] lg:w-1/2 mx-auto rounded-lg pt-8">
+      <div className="absolute left-0 top-0 right-0 w-full bg-red-600 flex justify-between items-center pl-8">
+        <span className="text-white">Chat with Ifunay-AI</span>
+        <button
+          onClick={() => setOpenModal({ name: '', status: false })}
+          className=" h-12 w-12 rounded-md shadow-md text-white"
+        >
+          X
+        </button>
+      </div>
 
-      <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Talk to AI Expert</h1>
-        <form onSubmit={handleSubmit} className="mb-4">
-          <textarea
-            value={personality}
-            onChange={handleChange}
-            placeholder="Describe your partner's personality..."
-            className="w-full p-2 border rounded mb-4"
-            rows={4}
-          />
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-            Get Date Suggestion
-          </button>
-        </form>
-        {suggestion && (
-          <div className="bg-green-100 p-4 rounded">
-            <h2 className="text-xl font-bold mb-2">Curated Date Suggestion:</h2>
-            <p>{suggestion}</p>
+      <div className="container mx-auto py-4  h-full flex flex-col ">
+        <div className="lg:px-4 flex-1 mb-2  overflow-hidden">
+          <div className="bg-gray-50 h-full overflow-y-auto p-4 rounded-md">
+            {messages?.length <= 1 ? (
+              <div className="flex flex-col justify-center items-center bg-red-50 rounded-lg h-full">
+                <Image
+                  src={iRobotLarge}
+                  alt="Ai robot"
+                  height={150}
+                  width={300}
+                />
+              </div>
+            ) : (
+              messages?.slice(1)?.map((message, index) => (
+                <div
+                  key={index}
+                  className={`mb-4  flex items-end gap-2 ${
+                    message.role === 'assistant'
+                      ? 'ml-auto'
+                      : ' flex-row-reverse'
+                  }`}
+                >
+                  <Image
+                    src={message.role === 'assistant' ? iRobotSmall : person}
+                    alt={message.role === 'assistant' ? 'AI' : 'You'}
+                    height={40}
+                    width={40}
+                  />
+                  <p
+                    className={`${
+                      message.role === 'assistant'
+                        ? 'bg-red-100'
+                        : ' bg-teal-100 '
+                    } text-black text-sm  p-2 w-fit max-w-[90%] md:max-w-[80%] rounded-md`}
+                  >
+                    {message.content}
+                  </p>
+
+                  <div ref={chatRef}></div>
+                </div>
+              ))
+            )}
           </div>
-        )}
+        </div>
+
+        <form onSubmit={handleSubmit} className="mt-auto px-2">
+          <div className="w-full py-1 pl-4 pr-1 flex  justify-center gap-6 border border-red-200 rounded-full">
+            <input
+              type="text"
+              value={input}
+              onChange={handleChange}
+              className="flex-1  resize-none border-0 outline-0 bg-transparent text-sm"
+              placeholder="Start coversation.."
+              autoFocus
+            />
+
+            <div className="w-[20%]">
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center py-2.5 px-4  rounded-full text-white bg-red-400 text-sm  font-semibold"
+                disabled={loading}
+              >
+                {loading ? (
+                  <Image
+                    className=" animate-spin"
+                    src={halfCircle}
+                    alt="loading"
+                  />
+                ) : (
+                  <span>Send</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   );
