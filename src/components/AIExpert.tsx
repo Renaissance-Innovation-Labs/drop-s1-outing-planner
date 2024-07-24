@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 
-import { OpenModalProps } from '@/utils/context';
+import { OpenModalProps, MessageProps } from '@/utils/context';
 
 import { getSuggestionFromAI } from '@/utils/helper';
 
@@ -9,11 +9,9 @@ import { iRobotLarge, iRobotSmall, person } from '../../public/images';
 import { halfCircle } from '../../public/icons';
 
 const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
-  const key = process.env.OPEN_API_KEY;
+  const key = process.env.OPEN_API_KEY + 'hey';
 
-  const [messages, setMessages] = useState<
-    Array<{ role: string; content: string }>
-  >([
+  const [messages, setMessages] = useState<MessageProps[]>([
     {
       role: 'system',
       content: 'You are a helpful assistant. Your name is Ifunay-ai',
@@ -33,19 +31,35 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
 
     const newMessage = { role: 'user', content: input };
 
-    const updatedMessages = [...messages, newMessage];
+    if (newMessage?.content?.length > 1) {
+      const updatedMessages = [...messages, newMessage];
 
-    setMessages(updatedMessages);
+      setMessages(updatedMessages);
 
-    setInput('');
+      setInput('');
 
-    setLoading(true);
+      setLoading(true);
 
-    const response = await getSuggestionFromAI(updatedMessages, key);
+      const { response, error } = await getSuggestionFromAI(
+        updatedMessages,
+        key,
+      );
 
-    const aiReply = { role: 'assistant', content: response };
-    setMessages([...updatedMessages, aiReply]);
-    setLoading(false);
+      if (error) {
+        const aiReply = {
+          role: 'assistant',
+          content: error,
+        };
+        setMessages([...updatedMessages, aiReply]);
+        setLoading(false);
+      } else if (response) {
+        const aiReply = { role: 'assistant', content: response };
+        setMessages([...updatedMessages, aiReply]);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+    }
   };
 
   useEffect(() => {
@@ -97,8 +111,8 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
                   <p
                     className={`${
                       message.role === 'assistant'
-                        ? 'bg-red-100'
-                        : ' bg-teal-100 '
+                        ? 'bg-pink-100'
+                        : ' bg-[#f5f5f5]'
                     } text-black text-sm  p-2 w-fit max-w-[90%] md:max-w-[80%] rounded-md`}
                   >
                     {message.content}
@@ -122,7 +136,7 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
               autoFocus
             />
 
-            <div className="w-[20%]">
+            <div className="w-1/4  lg:w-[20%]">
               <button
                 type="submit"
                 className="w-full flex items-center justify-center py-2.5 px-4  rounded-full text-white bg-red-400 text-sm  font-semibold"
