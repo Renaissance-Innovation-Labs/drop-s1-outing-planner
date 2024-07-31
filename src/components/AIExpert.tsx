@@ -104,7 +104,7 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
         <div className="lg:px-4 flex-1 mb-2  overflow-hidden">
           <div className="bg-gray-50 h-full overflow-y-auto p-4 rounded-md">
             {messages?.length <= 1 ? (
-              <div className="px-4 flex justify-between items-center bg-red-50 rounded-lg h-full">
+              <div className="px-4 flex flex-col md:flex-row gap-y-8 justify-between items-center bg-red-50 rounded-lg h-fit md:h-full">
                 <Image
                   src={iRobotLarge}
                   alt="Ai robot"
