@@ -17,11 +17,11 @@ const AZ = ({ setOpenModal }) => {
       </button>
 
       <div className="py-10 px-6 ">
-        <h3>A-Z Date Ideas</h3>
+        <h3 className="font-bold text-lg">A-Z Date Ideas</h3>
 
-        <p className="mb-4">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ducimus,
-          laborum.
+        <p className="mb-4 mt-2 text-base ">
+          We have taken the time to represent several dating ideas in
+          alphabetical order to make perusing a lot more easier
         </p>
 
         <div className="overflow-y-scroll">
