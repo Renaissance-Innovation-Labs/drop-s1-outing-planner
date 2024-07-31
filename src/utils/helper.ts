@@ -12,6 +12,17 @@ export const systemInstruction = ` Follow this sets of instruction:
   6.  This is very important, responses given must not exceed  ${maxToken} characters to ensures completeness of response
   `;
 
+// Define terms to check
+const restrictedTerms = [
+  'hello',
+  'hi',
+  'greetings',
+  'what is your name',
+  'hey',
+  'how are you',
+  'nice to meet you',
+];
+
 export const getSuggestionFromAI = async (
   messages: MessageProps[],
   key: string | undefined,
@@ -37,37 +48,43 @@ export const getSuggestionFromAI = async (
     const data = res.data;
     const response = data?.choices[0]?.message?.content?.trim();
 
-    // Initialize imageUrls
     let imageUrls: imageUrlProps[] = [];
 
-    // Attempt to generate images
-    try {
-      const imageRes = await axios.post(
-        'https://api.openai.com/v1/images/generations',
-        {
-          prompt: `Get images from the internet which matches this prompt: ${prompt}`,
-          n: 3,
-          size: '256x256',
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${key}`,
-          },
-        },
-      );
+    // Check if the prompt contains any forbidden terms
+    const containsForbiddenTerms = restrictedTerms.some((term) =>
+      prompt.toLowerCase().includes(term.toLowerCase()),
+    );
 
-      imageUrls = imageRes.data.data;
-    } catch (imageError: any) {
-      console.error(
-        `Image generation failed: (Error StatusCode: ${
-          imageError?.response?.status
-        }) ${
-          imageError?.response?.data?.error?.message ||
-          imageError?.message ||
-          String(imageError)
-        }`,
-      );
+    if (!containsForbiddenTerms) {
+      // Attempt to generate images
+      try {
+        const imageRes = await axios.post(
+          'https://api.openai.com/v1/images/generations',
+          {
+            prompt: `Get images from the internet which matches this prompt: ${prompt}`,
+            n: 3,
+            size: '256x256',
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${key}`,
+            },
+          },
+        );
+
+        imageUrls = imageRes.data.data;
+      } catch (imageError: any) {
+        console.error(
+          `Image generation failed: (Error StatusCode: ${
+            imageError?.response?.status
+          }) ${
+            imageError?.response?.data?.error?.message ||
+            imageError?.message ||
+            String(imageError)
+          }`,
+        );
+      }
     }
 
     return { response, imageUrls };
