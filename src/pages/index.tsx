@@ -68,7 +68,7 @@ export default function SplashScreen() {
             </h1>
 
             <p
-              className={`relative  p-1 ml-auto text-base w-[max-content] ${openSans.className} before:absolute before:inset-0 before:bg-[#9B001A] before:animate-typewriter`}
+              className={`relative text-white  p-1 ml-auto text-base w-[max-content] ${openSans.className} before:absolute before:inset-0 before:bg-[#9B001A] before:animate-typewriter`}
             >
               ❤️❤️ Date Ideas Suite ❤️❤️❤️
             </p>
