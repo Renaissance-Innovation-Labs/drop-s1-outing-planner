@@ -4,10 +4,10 @@ import Image from 'next/image';
 import FormattedText from './FormattedText';
 
 import { iRobotLarge, iRobotSmall, person } from '../../public/images';
-import { halfCircle } from '../../public/icons';
+import { caretLeftWhite, halfCircle } from '../../public/icons';
 
 import { OpenModalProps, MessageProps } from '@/utils/context';
-import { getSuggestionFromAI } from '@/utils/helper';
+import { getSuggestionFromAI, systemInstruction } from '@/utils/helper';
 
 const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
   const key = process.env.OPEN_API_KEY;
@@ -15,7 +15,7 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
   const [messages, setMessages] = useState<MessageProps[]>([
     {
       role: 'system',
-      content: `Your name is Ifunay-AI, you are a helpful date idea assistant. With the exception of salutations, please respond with HTML formatting for better presentation, do not give me ordinary markdowns just formatted as HTML. For each date idea, date planning, or date suggestion you give, make sure they are real life places,  for more information include the website links to the places, and price ranges in Nigerian Naira (₦). Keep responses within the token limit to ensure completeness`,
+      content: systemInstruction,
     },
   ]);
 
@@ -27,18 +27,14 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
     setInput(e.target.value);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const newMessage = { role: 'user', content: input };
+  const handleSubmit = async (prompt: string) => {
+    const newMessage = { role: 'user', content: prompt };
 
     if (newMessage?.content?.length > 1) {
       const updatedMessages = [...messages, newMessage];
-
       setMessages(updatedMessages);
 
       setInput('');
-
       setLoading(true);
 
       const { response, error } = await getSuggestionFromAI(
@@ -85,12 +81,15 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
     },
   ];
 
-  console.log({ messages });
+  const goBack = () => {
+    setOpenModal({ name: '', status: false });
+  };
 
   return (
     <div className="relative bg-white text-black w-full h-[600px] lg:w-1/2 mx-auto rounded-lg pt-8">
       <div className="absolute left-0 top-0 right-0 w-full bg-red-600 flex justify-between items-center pl-8">
         <span className="text-white">Chat with Ifunay-AI</span>
+
         <button
           onClick={() => setOpenModal({ name: '', status: false })}
           className=" h-12 w-12 rounded-md shadow-md text-white"
@@ -119,9 +118,7 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
                   <ul className="">
                     {starters?.map((item) => (
                       <li
-                        onClick={() => {
-                          setInput(item.content);
-                        }}
+                        onClick={() => handleSubmit(item.content)}
                         role="button"
                         className="text-xs border border-red-100 bg-white/70 p-2 mb-3 rounded-lg"
                         key={item.id}
@@ -158,7 +155,13 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-auto px-2">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(input);
+          }}
+          className="mt-auto px-2"
+        >
           <div className="w-full py-1 pl-4 pr-1 flex  justify-center gap-6 border border-red-200 rounded-full">
             <input
               type="text"
@@ -194,3 +197,5 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
 };
 
 export default AIExpert;
+
+// content: `Your name is Ifunay-AI, you are a helpful date idea assistant. With the exception of salutations, please respond with HTML formatting for better presentation, do not give me ordinary markdowns just formatted as HTML. For each date idea, date planning, or date suggestion you give, make sure they are real life places,  for more information include the website links to the places, and price ranges in Nigerian Naira (₦). Keep responses within the token limit to ensure completeness`,

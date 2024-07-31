@@ -1,6 +1,17 @@
 import axios from 'axios';
 import { MessageProps, AIResponse } from './context';
 
+const maxToken: number = 300;
+
+export const systemInstruction = ` Follow this sets of instruction:
+  1. You are a helpful date Idea assistant.
+  2. Your name is Ifunay-AI.
+  3. When asked about dates, your responses are HTML formatted for better presentation, do not include ordinary markdown.
+  4. Do not HTML format greetings, salutations and familliarity.
+  5. For Each date idea or suggestion, provide real life location and price ranges in Nigerian Naira (₦), if the information is in foreign currency, convert to Nigerian Naira (₦).
+  6.  This is very important, responses given must not exceed  ${maxToken} characters to ensures completeness of response
+  `;
+
 export const getSuggestionFromAI = async (
   messages: MessageProps[],
   key: string | undefined,
@@ -34,7 +45,7 @@ export const getSuggestionFromAI = async (
     const res = await axios.post(
       'https://api.openai.com/v1/chat/completions',
       {
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o-mini',
         messages,
         max_tokens: 300,
       },
@@ -54,54 +65,5 @@ export const getSuggestionFromAI = async (
     return {
       error: `(Error StatusCode: ${error?.response?.status}) ${errorMessage}`,
     };
-  }
-};
-
-const CONTINUE_PROMPT = 'CONTINUE FROM HERE: ';
-
-export const getSuggestionFromA3I = async (
-  messages: MessageProps[],
-  key: string | undefined,
-  max_tokens: number = 200,
-): Promise<AIResponse> => {
-  try {
-    let completeResponse = '';
-    let isResponseComplete = false;
-
-    while (!isResponseComplete) {
-      const response = await axios.post(
-        'https://api.openai.com/v1/chat/completions',
-        {
-          model: 'gpt-3.5-turbo',
-          messages,
-          max_tokens,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${key}`,
-          },
-        },
-      );
-
-      const data = response.data;
-      const aiResponse = data?.choices[0]?.message?.content?.trim();
-
-      if (aiResponse) {
-        completeResponse += aiResponse;
-        isResponseComplete = !aiResponse.endsWith(CONTINUE_PROMPT);
-
-        if (!isResponseComplete) {
-          messages.push({ role: 'assistant', content: aiResponse });
-          messages.push({ role: 'user', content: CONTINUE_PROMPT });
-        }
-      } else {
-        isResponseComplete = true;
-      }
-    }
-
-    return { response: completeResponse };
-  } catch (error: any) {
-    return { error: error?.response?.data?.error?.message || error.toString() };
   }
 };
