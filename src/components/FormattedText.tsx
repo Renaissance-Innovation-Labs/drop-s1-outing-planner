@@ -1,4 +1,6 @@
 import React from 'react';
+import Image from 'next/image';
+import { MessageProps, imageUrlProps } from '@/utils/context';
 import parse, { domToReact, Element, DOMNode } from 'html-react-parser';
 
 // Function to replace HTML nodes with React components and apply styling
@@ -80,21 +82,34 @@ const formatHtmlContent = (html: string): any => {
   });
 };
 
-// Component to render formatted text
-interface Message {
-  message: {
-    role: string;
-    content?: string;
-  };
+interface FormattedTextProps {
+  message: MessageProps;
+  images: imageUrlProps[];
 }
 
-const FormattedText = ({ message }: Message) => {
+const FormattedText = ({ message, images }: FormattedTextProps) => {
   return (
     <div
       className={`${
         message.role === 'assistant' ? 'bg-pink-50' : 'bg-[#f5f5f5]'
       } text-black text-sm p-2 w-fit max-w-[90%] md:max-w-[80%] rounded-md`}
     >
+      {message.role === 'assistant' && images?.length > 0 && (
+        <div className="flex flex-col md:flex-row gap-4 mb-3">
+          {images?.map((item, index) => (
+            <div key={index} className="relative h-32 w-32 bg-grey-200">
+              <Image
+                src={item.url}
+                alt="image gen"
+                fill
+                object-fit="cover"
+                priority
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
       {formatHtmlContent(message.content || '')}
     </div>
   );

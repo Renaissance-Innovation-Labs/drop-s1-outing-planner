@@ -6,7 +6,7 @@ import FormattedText from './FormattedText';
 import { iRobotLarge, iRobotSmall, person } from '../../public/images';
 import { caretLeftWhite, halfCircle } from '../../public/icons';
 
-import { OpenModalProps, MessageProps } from '@/utils/context';
+import { OpenModalProps, MessageProps, imageUrlProps } from '@/utils/context';
 import { getSuggestionFromAI, systemInstruction } from '@/utils/helper';
 
 const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
@@ -18,6 +18,8 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
       content: systemInstruction,
     },
   ]);
+
+  const [images, setImages] = useState<imageUrlProps[]>([]);
 
   const [input, setInput] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -34,22 +36,26 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
       const updatedMessages = [...messages, newMessage];
       setMessages(updatedMessages);
 
-      setInput('');
       setLoading(true);
 
-      const { response, error } = await getSuggestionFromAI(
+      const { response, error, imageUrls } = await getSuggestionFromAI(
         updatedMessages,
         key,
+        prompt,
       );
+
+      setInput('');
 
       if (error) {
         const aiReply = {
           role: 'assistant',
           content: error,
         };
+        setImages([]);
         setMessages([...updatedMessages, aiReply]);
         setLoading(false);
       } else if (response) {
+        setImages(imageUrls);
         const aiReply = { role: 'assistant', content: response };
         setMessages([...updatedMessages, aiReply]);
         setLoading(false);
@@ -68,7 +74,7 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
   const starters = [
     {
       id: 1,
-      content: 'Plan an intimate date idea, place: Lagos, Nigeria',
+      content: 'Plan a romantic date idea in Lagos, Nigeria.',
     },
     {
       id: 2,
@@ -80,10 +86,6 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
       content: 'Suggest a date idea for honeymooners in Maldives',
     },
   ];
-
-  const goBack = () => {
-    setOpenModal({ name: '', status: false });
-  };
 
   return (
     <div className="relative bg-white text-black w-full h-[600px] lg:w-1/2 mx-auto rounded-lg pt-8">
@@ -146,7 +148,7 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
                     width={40}
                   />
 
-                  <FormattedText message={message} />
+                  <FormattedText message={message} images={images} />
 
                   <div ref={chatRef}></div>
                 </div>

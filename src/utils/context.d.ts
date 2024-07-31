@@ -23,7 +23,12 @@ export interface MessageProps {
   content?: string;
 }
 
+export interface imageUrlProps {
+  url: string;
+}
+
 export interface AIResponse {
   response?: string;
   error?: string;
+  imageUrls: imageUrlProps[];
 }
