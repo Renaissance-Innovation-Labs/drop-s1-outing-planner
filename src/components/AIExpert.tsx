@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 
-import { OpenModalProps, MessageProps } from '@/utils/context';
-
-import { getSuggestionFromAI } from '@/utils/helper';
+import FormattedText from './FormattedText';
 
 import { iRobotLarge, iRobotSmall, person } from '../../public/images';
 import { halfCircle } from '../../public/icons';
+
+import { OpenModalProps, MessageProps } from '@/utils/context';
+import { getSuggestionFromAI } from '@/utils/helper';
 
 const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
   const key = process.env.OPEN_API_KEY;
@@ -14,7 +15,7 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
   const [messages, setMessages] = useState<MessageProps[]>([
     {
       role: 'system',
-      content: 'You are a helpful assistant. Your name is Ifunay-ai',
+      content: `Your name is Ifunay-AI, you are a helpful date idea assistant. With the exception of salutations, please respond with HTML formatting for better presentation, do not give me ordinary markdowns just formatted as HTML. For each date idea, date planning, or date suggestion you give, make sure they are real life places,  for more information include the website links to the places, and price ranges in Nigerian Naira (₦). Keep responses within the token limit to ensure completeness`,
     },
   ]);
 
@@ -68,6 +69,24 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
     }
   }, [messages]);
 
+  const starters = [
+    {
+      id: 1,
+      content: 'Plan an intimate date idea, place: Lagos, Nigeria',
+    },
+    {
+      id: 2,
+      content:
+        'Give me a list of date ideas with real places for a book lover, they live in Abuja, Nigeria',
+    },
+    {
+      id: 3,
+      content: 'Suggest a date idea for honeymooners in Maldives',
+    },
+  ];
+
+  console.log({ messages });
+
   return (
     <div className="relative bg-white text-black w-full h-[600px] lg:w-1/2 mx-auto rounded-lg pt-8">
       <div className="absolute left-0 top-0 right-0 w-full bg-red-600 flex justify-between items-center pl-8">
@@ -84,13 +103,34 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
         <div className="lg:px-4 flex-1 mb-2  overflow-hidden">
           <div className="bg-gray-50 h-full overflow-y-auto p-4 rounded-md">
             {messages?.length <= 1 ? (
-              <div className="flex flex-col justify-center items-center bg-red-50 rounded-lg h-full">
+              <div className="px-4 flex justify-between items-center bg-red-50 rounded-lg h-full">
                 <Image
                   src={iRobotLarge}
                   alt="Ai robot"
                   height={150}
                   width={300}
                 />
+
+                <div className="flex-1 self-end pb-4">
+                  <h3 className="font-medium text-sm mb-3">
+                    Here are some examples of starter conversations to have with
+                    Ifunay-AI.
+                  </h3>
+                  <ul className="">
+                    {starters?.map((item) => (
+                      <li
+                        onClick={() => {
+                          setInput(item.content);
+                        }}
+                        role="button"
+                        className="text-xs border border-red-100 bg-white/70 p-2 mb-3 rounded-lg"
+                        key={item.id}
+                      >
+                        {item.content}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             ) : (
               messages?.slice(1)?.map((message, index) => (
@@ -108,15 +148,8 @@ const AIExpert: React.FC<OpenModalProps> = ({ setOpenModal }) => {
                     height={40}
                     width={40}
                   />
-                  <p
-                    className={`${
-                      message.role === 'assistant'
-                        ? 'bg-pink-100'
-                        : ' bg-[#f5f5f5]'
-                    } text-black text-sm  p-2 w-fit max-w-[90%] md:max-w-[80%] rounded-md`}
-                  >
-                    {message.content}
-                  </p>
+
+                  <FormattedText message={message} />
 
                   <div ref={chatRef}></div>
                 </div>
